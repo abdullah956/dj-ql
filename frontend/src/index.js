@@ -5,9 +5,15 @@ import { createUploadLink } from "apollo-upload-client";
 import App from "./App";
 
 const client = new ApolloClient({
-  link: createUploadLink({ uri: "http://localhost:8000/graphql/" }),
+  link: createUploadLink({
+    uri: "http://localhost:8000/graphql/",
+    headers: {
+      authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  }),
   cache: new InMemoryCache(),
 });
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

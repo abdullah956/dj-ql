@@ -3,3 +3,7 @@ pillow==11.2.1
 graphene-django==3.2.3
 django-cors-headers==4.7.0
 graphene-file-upload==1.3.0
+djangorestframework-simplejwt==5.5.0
+graphene==3.4.3
+djangorestframework==3.16.0
+django-graphql-jwt==0.4.0

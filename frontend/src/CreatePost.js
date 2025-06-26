@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 
 const CREATE_POST = gql`
   mutation CreatePost($title: String!, $content: String!, $image: Upload) {
@@ -17,12 +17,18 @@ const CREATE_POST = gql`
 `;
 
 function CreatePost() {
+  const token = localStorage.getItem("token");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
 
   const [createPost] = useMutation(CREATE_POST, {
+    context: {
+      headers: {
+        Authorization: token ? `JWT ${token}` : "",
+      },
+    },
     update(cache, { data: { createPost } }) {
       cache.modify({
         fields: {
@@ -53,6 +59,8 @@ function CreatePost() {
     });
     navigate("/");
   };
+
+  if (!token) return <Navigate to="/login" />;
 
   return (
     <div>

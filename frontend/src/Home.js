@@ -1,6 +1,6 @@
 import React from "react";
 import { gql, useQuery } from "@apollo/client";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const GET_POSTS = gql`
   query {
@@ -16,15 +16,43 @@ const GET_POSTS = gql`
 
 function Home() {
   const { loading, error, data } = useQuery(GET_POSTS);
+  const navigate = useNavigate();
+  const isLoggedIn = !!localStorage.getItem("token");
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  const handleCreatePost = () => {
+    if (isLoggedIn) {
+      navigate("/new");
+    } else {
+      navigate("/login");
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading posts.</p>;
 
   return (
     <div>
-      <Link to="/new">
-        <button>Create New Post</button>
-      </Link>
+      <div style={{ marginBottom: "20px" }}>
+        {isLoggedIn ? (
+          <button onClick={handleLogout}>Logout</button>
+        ) : (
+          <>
+            <Link to="/login">
+              <button>Login</button>
+            </Link>
+            <Link to="/signup">
+              <button>Signup</button>
+            </Link>
+          </>
+        )}
+      </div>
+
+      <button onClick={handleCreatePost}>Create New Post</button>
 
       <h1>Blog Posts</h1>
       {data.allPosts.map((post) => (
